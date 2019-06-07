@@ -10,51 +10,51 @@
     @using (Html.BeginForm("Index", "Home", FormMethod.Post, htmlAttributes: new { @class = "form-inline" }))
     {
         @Html.AntiForgeryToken()
-            @Html.TextBox("searchTerm", string.Empty, new { @placeholder = "Enter User name" , @class = "form-control mb-2 mr-sm-2" });
-        <label class="sr-only" for="searchTerm">searchTerm</label>
-        @*<input type="text" class="form-control mb-2 mr-sm-2" id="searchTerm" 
-               name="searchTerm" placeholder="Enter User name">*@
+        @Html.TextBox("searchTerm", string.Empty, new { @placeholder = "Enter User name", @class = "form-control mb-2 mr-sm-2" });
         <button type="submit" class="btn btn-primary mb-2">Search</button>
-
-        @*<div class="form-row align-items-center">
-                <div class="col-auto">
-                    <label class="sr-only" for="searchTerm">User Name</label>
-                    <input type="text" class="form-control mb-2" id="searchTerm" placeholder="Enter User name">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-2">Search</button>
-                </div>
-            </div>*@
     }
     <div class="row">
         <div class="col-md-12 text-center">
-            @if (Model?.name != null)
+            @if (Model?.Name != null)
             {
-                <p>User: @Model.name</p>
-                <p>Location: @Model.location</p>
-                <img alt="" src="@Model.avatar_url" />
-                <div>
-                    <h3>Top 5 Repository</h3>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th>Repo Name</th>
-                                <th>StarGazer Count</th>
-                            </tr>
-                            @foreach (var repo in Model.repositories)
-                            {
+                <div class="row">
+                    <div class="col-md-6">
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <div>
+                                <img alt="@Model.Name" title="@Model.Name" src="@Model.Avatar_url" width="60" height="60" />
+                            </div>
+                        }
+                        <h4>@Model.Name</h4>
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <p>@Model.Location</p>
+                        }
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <h3>Top 5 Repository</h3>
+                        <table class="table">
+                            <tbody>
                                 <tr>
-                                    <td>
-                                        @repo.name
-                                    </td>
-                                    <td>
-                                        @repo.stargazers_count
-                                    </td>
+                                    <th>Repo Name</th>
+                                    <th>StarGazer Count</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                                @foreach (var repo in Model.Repositories)
+                                {
+                                    <tr>
+                                        <td>
+                                            @repo.name
+                                        </td>
+                                        <td>
+                                            @repo.stargazers_count
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
             }
             else
             {

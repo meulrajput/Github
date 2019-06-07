@@ -23,52 +23,52 @@ namespace Github.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Index(string searchTerm)
         {
-            //if (!string.IsNullOrEmpty(searchTerm))
-            //{
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            //    var url = githubApi + $"users/{searchTerm}";
-            //    using (var webClient = new WebClient())
-            //    {
-            //        webClient.Headers.Add("user-agent", "other");
-            //        var rawJSON = webClient.DownloadString(url);
-            //        UserView userView = JsonConvert.DeserializeObject<UserView>(rawJSON);
-            //        if (userView.repos_url != null)
-            //        {
-            //            webClient.Headers.Add("user-agent", "other");
-            //            rawJSON = webClient.DownloadString(userView.repos_url);
-            //            List<Models.Repository> repositories = JsonConvert.DeserializeObject<List<Models.Repository>>(rawJSON);
-            //            userView.repositories = repositories.OrderByDescending(rep => rep.stargazers_count).Take(5).ToList();
-            //        }
-            //        return View(userView);
-            //    }
-            //}
-            //return View();
-
-
-
-            using (HttpClient client = new HttpClient())
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                client.BaseAddress = new Uri(githubApi);
-                client.DefaultRequestHeaders.Add("user-agent", "other");
-                HttpResponseMessage response = await client.GetAsync($"users/{searchTerm}");
-                if (response.IsSuccessStatusCode)
+                #region WebClient
+                //var url = githubApi + $"users/{searchTerm}";
+                //using (var webClient = new WebClient())
+                //{
+                //    webClient.Headers.Add("user-agent", "other");
+                //    var rawJSON = webClient.DownloadString(url);
+                //    UserView userView = JsonConvert.DeserializeObject<UserView>(rawJSON);
+                //    if (userView.repos_url != null)
+                //    {
+                //        webClient.Headers.Add("user-agent", "other");
+                //        rawJSON = webClient.DownloadString(userView.repos_url);
+                //        List<Models.Repository> repositories = JsonConvert.DeserializeObject<List<Models.Repository>>(rawJSON);
+                //        userView.repositories = repositories.OrderByDescending(rep => rep.stargazers_count).Take(5).ToList();
+                //    }
+                //    return View(userView);
+                //}
+                #endregion
+
+                using (HttpClient client = new HttpClient())
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    UserView userView = JsonConvert.DeserializeObject<UserView>(data);
-                    if (userView.repos_url != null)
+                    client.BaseAddress = new Uri(githubApi);
+                    client.DefaultRequestHeaders.Add("user-agent", "other");
+                    HttpResponseMessage response = await client.GetAsync($"users/{searchTerm}");
+                    if (response.IsSuccessStatusCode)
                     {
-                        response = await client.GetAsync(userView.repos_url);
-                        if (response.IsSuccessStatusCode)
+                        var data = await response.Content.ReadAsStringAsync();
+                        UserView userView = JsonConvert.DeserializeObject<UserView>(data);
+                        if (userView.Repos_url != null)
                         {
-                            data = await response.Content.ReadAsStringAsync();
-                            List<Models.Repository> repositories = JsonConvert.DeserializeObject<List<Models.Repository>>(data);
-                            userView.repositories = repositories.OrderByDescending(rep => rep.stargazers_count).Take(5).ToList();
+                            response = await client.GetAsync(userView.Repos_url);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                data = await response.Content.ReadAsStringAsync();
+                                List<Models.Repository> repositories = JsonConvert.DeserializeObject<List<Models.Repository>>(data);
+                                userView.Repositories = repositories.OrderByDescending(rep => rep.stargazers_count).Take(5).ToList();
+                            }
                         }
+                        return View(userView);
                     }
-                    return View(userView);
+                    return View();
                 }
             }
             return View();
+
 
         }
     }
